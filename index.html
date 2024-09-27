@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Item Cost Calculator with Quantity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .output {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Multiple Item Cost Calculator</h2>
+
+        <!-- Input for the target item -->
+        <label for="targetItem">Target Item Name:</label>
+        <input type="text" id="targetItem" placeholder="Enter target item name">
+
+        <label for="quantity">Target Item Quantity:</label>
+        <input type="number" id="quantity" placeholder="Enter target item quantity">
+
+        <!-- Input for up to 10 different items -->
+        <h3>Material Costs</h3>
+
+        <div id="itemsContainer">
+            <!-- Input for the first item -->
+            <div class="item-group">
+                <label for="item1">Item 1 Name:</label>
+                <input type="text" id="item1Name" placeholder="Enter item 1 name">
+                <input type="number" id="item1Quantity" placeholder="Quantity">
+                <input type="number" id="item1MinPrice" placeholder="Min Price per item">
+                <input type="number" id="item1MaxPrice" placeholder="Max Price per item">
+            </div>
+
+            <!-- Generate inputs for 9 more items -->
+            <div id="additionalItems"></div>
+
+        </div>
+
+        <!-- Button to add more items -->
+        <button onclick="addItem()">Add More Items (Max 10)</button>
+
+        <!-- Calculate button -->
+        <button onclick="calculateTotalCost()">Calculate Total Cost</button>
+
+        <!-- Output -->
+        <div class="output">
+            <p id="minTotal">Min Total Cost: </p>
+            <p id="maxTotal">Max Total Cost: </p>
+        </div>
+    </div>
+
+    <script>
+        let itemCount = 1;
+
+        // Function to add more items (up to 10)
+        function addItem() {
+            if (itemCount >= 10) {
+                alert("You can only add up to 10 items.");
+                return;
+            }
+
+            itemCount++;
+            const additionalItems = document.getElementById("additionalItems");
+
+            const newItemGroup = `
+                <div class="item-group">
+                    <label for="item${itemCount}">Item ${itemCount} Name:</label>
+                    <input type="text" id="item${itemCount}Name" placeholder="Enter item ${itemCount} name">
+                    <input type="number" id="item${itemCount}Quantity" placeholder="Quantity">
+                    <input type="number" id="item${itemCount}MinPrice" placeholder="Min Price per item">
+                    <input type="number" id="item${itemCount}MaxPrice" placeholder="Max Price per item">
+                </div>
+            `;
+
+            additionalItems.insertAdjacentHTML('beforeend', newItemGroup);
+        }
+
+        // Function to calculate total cost
+        function calculateTotalCost() {
+            let minTotal = 0;
+            let maxTotal = 0;
+
+            // Loop through all items (up to 10)
+            for (let i = 1; i <= itemCount; i++) {
+                const itemQuantity = parseInt(document.getElementById(`item${i}Quantity`).value);
+                const itemMinPrice = parseFloat(document.getElementById(`item${i}MinPrice`).value);
+                const itemMaxPrice = parseFloat(document.getElementById(`item${i}MaxPrice`).value);
+
+                // Validate that prices and quantity are filled out
+                if (isNaN(itemQuantity) || isNaN(itemMinPrice) || isNaN(itemMaxPrice)) {
+                    alert(`Please fill out the fields for Item ${i}.`);
+                    return;
+                }
+
+                // Calculate cost for each item (quantity * price)
+                minTotal += itemQuantity * itemMinPrice;
+                maxTotal += itemQuantity * itemMaxPrice;
+            }
+
+            // Display total cost in the output
+            document.getElementById("minTotal").innerText = "Min Total Cost: " + minTotal + " Gold";
+            document.getElementById("maxTotal").innerText = "Max Total Cost: " + maxTotal + " Gold";
+        }
+    </script>
+
+</body>
+</html>
